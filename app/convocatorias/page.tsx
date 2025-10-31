@@ -1,10 +1,9 @@
-
  // app/convocatorias/ConvocatoriasClient.tsx
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import TopHeader from "@/components/header/top-header"; // Componente específico
-import MainHeader from "@/components/header/main-header"; // Componente específico
+import TopHeader from "@/components/header/top-header";
+import MainHeader from "@/components/header/main-header";
 import Footer from "@/components/footer";
 import { Download, Search, RefreshCw, AlertCircle, FileText, Award, X, Bell, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-
-// ... el resto del código se mantiene EXACTAMENTE igual
 
 // Tipos para Convocatorias basado en tu API
 type Documento = {
@@ -124,6 +121,54 @@ export default function ConvocatoriasClient() {
         return 'outline';
     }
   };
+
+  // Función CORREGIDA para formatear fechas - SIN problemas de zona horaria
+  const formatFecha = useCallback((fecha: string | null | undefined) => {
+    if (!fecha) return 'No definido';
+    
+    const fechaString = fecha.toString().trim();
+    
+    // Casos especiales
+    if (fechaString === '0000-00-00' || 
+        fechaString === 'null' || 
+        fechaString === 'undefined' ||
+        fechaString === '' ||
+        fechaString === '1970-01-01') {
+      return 'No definido';
+    }
+
+    // Convertir directamente YYYY-MM-DD a DD/MM/YYYY - FORMA SEGURA
+    const match = fechaString.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    
+    if (match) {
+      const [_, año, mes, dia] = match;
+      // Validación básica
+      const añoNum = parseInt(año);
+      const mesNum = parseInt(mes);
+      const diaNum = parseInt(dia);
+      
+      if (añoNum < 2000 || añoNum > 2030 || mesNum < 1 || mesNum > 12 || diaNum < 1 || diaNum > 31) {
+        return 'Fecha inválida';
+      }
+      
+      return `${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${año}`;
+    }
+    
+    // Si no coincide el formato, intentar con Date como fallback
+    try {
+      const date = new Date(fechaString);
+      if (isNaN(date.getTime())) {
+        return 'Fecha inválida';
+      }
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return fechaString; // Devolver original si hay error
+    }
+  }, []);
 
   // Función para cargar convocatorias CAS
   const fetchConvocatorias = useCallback(async () => {
@@ -269,20 +314,6 @@ export default function ConvocatoriasClient() {
         return 'bg-blue-500';
     }
   };
-
-  // Formatear fecha
-  const formatFecha = useCallback((fecha: string) => {
-    try {
-      const date = new Date(fecha);
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      });
-    } catch {
-      return fecha;
-    }
-  }, []);
 
   // Formatear tamaño de archivo
   const formatFileSize = useCallback((bytes?: number) => {
@@ -515,7 +546,7 @@ export default function ConvocatoriasClient() {
             </div>
           )}
 
-          {/* Table - ESTRUCTURA CORREGIDA */}
+          {/* Table */}
           {!isLoading && !error && filteredConvocatorias.length > 0 && (
             <>
               <div className="overflow-x-auto">
