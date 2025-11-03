@@ -18,7 +18,6 @@ import {
 
 import type { CategoryId } from "@/types/convocatorias";
 import { CATEGORIES_BASE } from "@/types/convocatorias";
-import { cn } from "@/lib/utils";
 
 interface Props {
   selectedCategory?: CategoryId | null;
@@ -26,7 +25,6 @@ interface Props {
   asLinks?: boolean;
   counts?: Partial<Record<CategoryId, number>> & { todas?: number };
   title?: string;
-  layout?: "horizontal" | "vertical";
 }
 
 // Mapeo simple de ID -> Icono
@@ -41,7 +39,6 @@ const ICONS: Record<string, React.ElementType> = {
   "nombramiento-asistencial": UserPlus,
   "nombramiento-administrativo": FileUser,
   ascenso: TrendingUp,
-  todas: FolderOpenDot,
 };
 
 export default function ConvocatoriasCategorias({
@@ -50,18 +47,11 @@ export default function ConvocatoriasCategorias({
   asLinks = true,
   counts,
   title = "Categorías de Convocatorias",
-  layout = "horizontal",
 }: Props) {
   // Incluimos manualmente "todas" al inicio
   const categories = useMemo(
     () => [
-      { 
-        id: "todas" as CategoryId, 
-        label: "Todas", 
-        description: "Ver todas las convocatorias", 
-        href: "/convocatorias", 
-        icon: FolderOpenDot 
-      },
+      { id: "todas" as CategoryId, label: "Todas", description: "Ver todas las convocatorias", href: "/convocatorias", icon: FolderOpenDot },
       ...CATEGORIES_BASE.map((c) => ({
         ...c,
         icon: ICONS[c.id] ?? FolderOpenDot,
@@ -70,76 +60,6 @@ export default function ConvocatoriasCategorias({
     []
   );
 
-  // Layout vertical para aside
-  if (layout === "vertical") {
-    return (
-      <div className="space-y-2">
-        {categories.map((category) => {
-          const Icon = category.icon as React.ElementType;
-          const isSelected =
-            selectedCategory === (category.id as CategoryId) ||
-            (selectedCategory === null && category.id === "todas");
-
-          const content = (
-            <div
-              className={cn(
-                "flex items-center gap-3 p-3 rounded-lg transition-all duration-200 border",
-                "hover:shadow-md cursor-pointer",
-                isSelected
-                  ? "bg-blue-600 text-white border-blue-600 shadow-lg"
-                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-              )}
-            >
-              <div className="relative">
-                <Icon className="w-5 h-5" />
-                {typeof counts?.[category.id as CategoryId] === "number" && (
-                  <span
-                    className={cn(
-                      "absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 rounded-full border min-w-[20px] text-center",
-                      isSelected
-                        ? "bg-white/20 text-white border-white/30"
-                        : "bg-gray-200 text-gray-600 border-gray-300"
-                    )}
-                    title={`Convocatorias: ${counts?.[category.id as CategoryId]}`}
-                  >
-                    {counts?.[category.id as CategoryId]}
-                  </span>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm">{category.label}</div>
-                <div className="text-xs opacity-75 truncate">{category.description}</div>
-              </div>
-            </div>
-          );
-
-          if (onSelectCategory) {
-            return (
-              <button
-                key={category.id}
-                onClick={() => onSelectCategory(category.id === "todas" ? null : (category.id as CategoryId))}
-                className="w-full text-left"
-              >
-                {content}
-              </button>
-            );
-          }
-
-          return asLinks ? (
-            <Link key={category.id} href={category.href} className="block">
-              {content}
-            </Link>
-          ) : (
-            <div key={category.id} className="text-left cursor-default" aria-disabled>
-              {content}
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  // Layout horizontal (original)
   return (
     <section id="convocatorias-categorias" className="py-12 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
@@ -161,24 +81,24 @@ export default function ConvocatoriasCategorias({
 
             const content = (
               <div
-                className={cn(
+                className={[
                   "flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-300 border",
                   "hover:shadow-md active:scale-[0.98]",
                   isSelected
                     ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105"
-                    : "bg-card text-foreground hover:bg-muted border-border"
-                )}
+                    : "bg-card text-foreground hover:bg-muted border-border",
+                ].join(" ")}
               >
                 <div className="relative">
                   <Icon className="w-7 h-7" />
                   {typeof counts?.[category.id as CategoryId] === "number" && (
                     <span
-                      className={cn(
+                      className={[
                         "absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 rounded-full border",
                         isSelected
                           ? "bg-primary-foreground text-primary border-primary-foreground/30"
-                          : "bg-foreground text-background border-foreground/20"
-                      )}
+                          : "bg-foreground text-background border-foreground/20",
+                      ].join(" ")}
                       title={`Convocatorias: ${counts?.[category.id as CategoryId]}`}
                     >
                       {counts?.[category.id as CategoryId]}

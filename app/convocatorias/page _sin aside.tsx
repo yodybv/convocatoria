@@ -5,8 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import HeroSection from "@/components/hero-section";
 import ConvocatoriasCategorias from "@/components/convocatorias-categorias";
 import ConvocatoriasGrid from "@/components/convocatorias-grid";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
 
 // 👇 importa tipos/mapas centralizados
 import { CategoryId, CATEGORY_TO_TIPO, CATEGORY_TITLE } from "@/types/convocatorias";
@@ -61,7 +59,6 @@ export default function ConvocatoriasHomePage() {
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<ApiConvocatoria[]>([]);
   const [counts, setCounts] = useState<Partial<Record<CategoryId, number>> & { todas?: number }>({ todas: undefined });
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const loadCounts = useCallback(async () => {
     try {
@@ -123,90 +120,25 @@ export default function ConvocatoriasHomePage() {
 
   const title = useMemo(() => CATEGORY_TITLE[selected || "todas"], [selected]);
 
-  const handleCategorySelect = (category: CategoryId | null) => {
-    setSelected(category === null ? "todas" : category);
-    setIsMobileMenuOpen(false); // Cerrar menú móvil al seleccionar categoría
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <main className="flex-1 flex">
-        {/* Aside lateral izquierdo para categorías */}
-        <aside className={`
-          fixed top-0 left-0 h-full w-80 bg-white border-r border-gray-200 shadow-lg z-40
-          transform transition-transform duration-300 ease-in-out
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:relative lg:translate-x-0 lg:w-80 lg:shadow-none
-        `}>
-          {/* Header del Aside */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xl font-bold">Categorías</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="lg:hidden text-white hover:bg-white/10"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-            <p className="text-sm text-blue-100">
-              Filtra por tipo de convocatoria
-            </p>
-          </div>
+       
 
-          {/* Lista de Categorías */}
-          <div className="h-[calc(100vh-120px)] overflow-y-auto p-4">
-            <ConvocatoriasCategorias
-              selectedCategory={selected}
-              onSelectCategory={handleCategorySelect}
-              asLinks={false}
-              counts={counts}
-              title=""
-              layout="vertical"
-            />
-          </div>
-        </aside>
+      <main className="flex-1">
+        <HeroSection />
 
-        {/* Overlay para móvil */}
-        {isMobileMenuOpen && (
-          <div 
-            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-        )}
+        <ConvocatoriasCategorias
+          selectedCategory={selected}
+          onSelectCategory={(c) => setSelected(c)}
+          asLinks={false}
+          counts={counts}
+          title="Categorías de Convocatorias"
+        />
 
-        {/* Contenido principal */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Botón para abrir menú móvil */}
-          <div className="lg:hidden p-4 border-b border-gray-200 bg-white">
-            <Button
-              variant="outline"
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="flex items-center gap-2"
-            >
-              <Menu className="h-4 w-4" />
-              Categorías
-            </Button>
-          </div>
-
-          {/* Hero Section */}
-          <div className="lg:hidden">
-            <HeroSection />
-          </div>
-
-          {/* Grid de Convocatorias */}
-          <div className="flex-1 p-6">
-            <ConvocatoriasGrid 
-              title={title} 
-              isLoading={isLoading} 
-              error={error} 
-              data={items} 
-            />
-          </div>
-        </div>
+        <ConvocatoriasGrid title={title} isLoading={isLoading} error={error} data={items} />
       </main>
+
+     
     </div>
   );
 }

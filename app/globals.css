@@ -4,32 +4,46 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color scheme for health institution - Green for trust, blue for professionalism */
   --background: oklch(0.98 0.002 100);
   --foreground: oklch(0.15 0.03 280);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.03 280);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.03 280);
-  --primary: oklch(0.45 0.15 142);
+
+  /* Azul institucional */
+  --primary: oklch(0.4878 0.2432 264.4);
   --primary-foreground: oklch(0.98 0 0);
+
+  /* Secundario (verde salud) */
   --secondary: oklch(0.65 0.12 180);
   --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.92 0.01 250);
+
+  /* Grises UI */
+  --muted: oklch(64.274% 0.17763 149.2);
   --muted-foreground: oklch(0.5 0.05 250);
-  --accent: oklch(0.5 0.18 25);
+
+  /* Acento cálido para CTAs sutiles */
+  --accent: oklch(48.621% 0.2514 300.536);
   --accent-foreground: oklch(1 0 0);
+
+  /* Estados/inputs/bordes */
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.98 0 0);
   --border: oklch(0.92 0.01 250);
   --input: oklch(0.97 0.01 250);
   --ring: oklch(0.45 0.15 142);
+
+  /* Colores para charts */
   --chart-1: oklch(0.45 0.15 142);
   --chart-2: oklch(0.65 0.12 180);
   --chart-3: oklch(0.55 0.14 30);
   --chart-4: oklch(0.5 0.16 140);
   --chart-5: oklch(0.6 0.13 185);
+
   --radius: 0.5rem;
+
+  /* Sidebar */
   --sidebar: oklch(0.98 0.002 100);
   --sidebar-foreground: oklch(0.15 0.03 280);
   --sidebar-primary: oklch(0.45 0.15 142);
@@ -47,24 +61,32 @@
   --card-foreground: oklch(0.95 0.01 100);
   --popover: oklch(0.18 0.02 280);
   --popover-foreground: oklch(0.95 0.01 100);
-  --primary: oklch(0.65 0.12 142);
+
+  --primary: oklch(0.4878 0.2432 264.4);
   --primary-foreground: oklch(0.12 0.02 280);
+
   --secondary: oklch(0.75 0.1 180);
   --secondary-foreground: oklch(0.12 0.02 280);
+
   --muted: oklch(0.3 0.03 280);
   --muted-foreground: oklch(0.7 0.05 250);
+
   --accent: oklch(0.7 0.15 25);
   --accent-foreground: oklch(0.12 0.02 280);
+
   --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --destructive-foreground: oklch(0.95 0.01 100);
+
   --border: oklch(0.3 0.03 280);
   --input: oklch(0.25 0.03 280);
   --ring: oklch(0.65 0.12 142);
+
   --chart-1: oklch(0.65 0.12 142);
   --chart-2: oklch(0.75 0.1 180);
   --chart-3: oklch(0.7 0.12 30);
   --chart-4: oklch(0.68 0.14 140);
   --chart-5: oklch(0.72 0.11 185);
+
   --sidebar: oklch(0.15 0.02 280);
   --sidebar-foreground: oklch(0.95 0.01 100);
   --sidebar-primary: oklch(0.65 0.12 142);
@@ -117,10 +139,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
 }
