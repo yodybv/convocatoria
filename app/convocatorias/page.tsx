@@ -43,7 +43,7 @@ type ApiResponse = {
 };
 
 const API_BASE =
-  (process.env.NEXT_PUBLIC_API_URL || "http://localhost/codefuerte_rrhh/Api/").replace(/\/+$/, "") + "/";
+  (process.env.NEXT_PUBLIC_API_URL || "https://sistemas.diresahuanuco.gob.pe/Api").replace(/\/+$/, "") + "/";
 const GET_CONVOCATORIA = API_BASE + "get_convocatoria.php";
 
 async function fetchByTipo(tipo: string): Promise<ApiConvocatoria[]> {

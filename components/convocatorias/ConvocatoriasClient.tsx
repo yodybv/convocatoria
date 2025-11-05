@@ -1,8 +1,8 @@
-// components/convocatorias/ConvocatoriasClient.tsx
+ // components/convocatorias/ConvocatoriasClient.tsx
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
- 
+
 import { Download, Search, RefreshCw, AlertCircle, FileText, Award, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,16 @@ type Documento = {
   titulo: string;
   url: string;
   fecha_publicacion: string;
+  tamanio_bytes?: number;
+};
+
+// ⭐ NUEVO: si tu API ya devuelve algo similar para resultados, lo podemos tratar igual
+type ResultadoAdjunto = {
+  id: number;
+  titulo: string;
+  url: string;
+  fecha_publicacion: string;
+  etapa?: string;
   tamanio_bytes?: number;
 };
 
@@ -37,6 +47,8 @@ type Convocatoria = {
   resultados: {
     total: number;
     etapas: string[];
+    // ⭐ NUEVO: para poder listar y descargar
+    detalle?: ResultadoAdjunto[];
   };
   fecha_fin: string;
   publicado: boolean;
@@ -174,7 +186,7 @@ export default function ConvocatoriasClient({
       setIsLoading(true);
       setError(null);
 
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost/codefuerte_rrhh/Api/";
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://sistemas.diresahuanuco.gob.pe/Api";
       const baseUrl = API_BASE.endsWith("/") ? API_BASE : `${API_BASE}/`;
       // 👇 tu backend actual (con guion bajo) + query param ?tipo=
       const apiUrl = `${baseUrl}get_convocatoria.php?tipo=${encodeURIComponent(tipo)}`;
@@ -218,30 +230,31 @@ export default function ConvocatoriasClient({
   }, [fetchConvocatorias]);
 
   // Descargar documento
-  const handleDownloadDocument = useCallback((documento: Documento, convocatoriaCodigo: string) => {
+  const handleDownloadDocument = useCallback((documento: Documento | ResultadoAdjunto, convocatoriaCodigo: string, prefix: string = "") => {
     try {
       let fileUrl = documento.url;
 
       if (!/^https?:\/\//i.test(fileUrl)) {
-        const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost/codefuerte_rrhh/Api/";
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://sistemas.diresahuanuco.gob.pe/Api";
         const baseUrl = API_BASE.replace(/\/?Api\/?$/, "/"); // quitar /Api/ para armar URL absoluta
         fileUrl = `${baseUrl}${documento.url.startsWith("/") ? documento.url.slice(1) : documento.url}`;
       }
+
+      const extension = (documento.url.split(".").pop() || "pdf").split("?")[0];
+      const nombreBase = documento.titulo ? documento.titulo : "archivo";
+      const fileName = `${convocatoriaCodigo}_${prefix}${nombreBase}_${documento.id}.${extension}`.replace(/\s+/g, "_");
 
       const link = document.createElement("a");
       link.href = fileUrl;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-
-      const extension = (documento.url.split(".").pop() || "pdf").split("?")[0];
-      const fileName = `${convocatoriaCodigo}_${documento.tipo_documento}_${documento.id}.${extension}`.replace(/\s+/g, "_");
       link.download = fileName;
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      alert(`Error al descargar el documento: ${documento.titulo}`);
+      alert(`Error al descargar el archivo: ${documento.titulo}`);
     }
   }, []);
 
@@ -297,11 +310,11 @@ export default function ConvocatoriasClient({
   const getEstadoColor = (estado: string) => {
     switch (estado.toLowerCase()) {
       case "en proceso":
-        return "bg-yellow-500";
-      case "finalizado":
         return "bg-green-500";
-      case "cancelado":
+      case "finalizado":
         return "bg-red-500";
+      case "cancelado":
+        return "bg-yellow-500";
       case "borrador":
         return "bg-gray-500";
       default:
@@ -412,8 +425,6 @@ export default function ConvocatoriasClient({
 
   return (
     <div className="min-h-screen bg-gray-50">
-     
-
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm">
           {/* Header */}
@@ -574,29 +585,66 @@ export default function ConvocatoriasClient({
                             </div>
                           </td>
 
-                          {/* RESULTADOS */}
-                          <td className="px-4 py-3 w-64">
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2">
-                                <Award className="w-4 h-4 text-green-600" />
-                                <span className="text-sm font-medium">{convocatoria.resultados.total} resultado(s)</span>
-                              </div>
-                              {convocatoria.resultados.etapas && convocatoria.resultados.etapas.length > 0 ? (
-                                <div className="flex flex-wrap gap-1 mt-1">
-                                  {convocatoria.resultados.etapas.slice(0, 3).map((etapa, idx) => (
-                                    <Badge key={idx} variant="outline" className="text-xs bg-green-50">
-                                      {etapa}
-                                    </Badge>
-                                  ))}
-                                  {convocatoria.resultados.etapas.length > 3 && (
-                                    <Badge variant="outline" className="text-xs">+{convocatoria.resultados.etapas.length - 3}</Badge>
-                                  )}
-                                </div>
-                              ) : (
-                                <div className="text-xs text-gray-500 italic">Sin resultados publicados</div>
-                              )}
+                           {/* RESULTADOS */}
+                        <td className="px-4 py-3 w-64">
+                          <div className="flex flex-col gap-2">
+                            {/* encabezado igual que documentos */}
+                            <div className="flex items-center gap-2">
+                              <Award className="w-4 h-4 text-green-600" />
+                              <span className="text-sm font-medium">
+                                {convocatoria.resultados.total} resultado(s)
+                              </span>
                             </div>
-                          </td>
+
+                            {/* SOLO mostramos si hay archivos de resultados */}
+                            {Array.isArray(convocatoria.resultados.detalle) &&
+                            convocatoria.resultados.detalle.length > 0 ? (
+                              <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                                {convocatoria.resultados.detalle.map((resultado) => (
+                                  <div
+                                    key={resultado.id}
+                                    className="flex items-center justify-between gap-2 p-2 bg-green-50 rounded border"
+                                  >
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                      <Badge
+                                        variant="outline"
+                                        className="text-xs whitespace-nowrap flex-shrink-0"
+                                      >
+                                        Resultado
+                                      </Badge>
+                                      <span
+                                        className="text-xs truncate flex-1 cursor-help"
+                                        title={resultado.titulo}
+                                      >
+                                        {resultado.titulo}
+                                      </span>
+                                    </div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="h-6 w-6 p-0 flex-shrink-0"
+                                      onClick={() =>
+                                        handleDownloadDocument(
+                                          resultado,
+                                          convocatoria.codigo,
+                                          "RESULTADO_"
+                                        )
+                                      }
+                                      title={`Descargar ${resultado.titulo}`}
+                                    >
+                                      <Download className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-xs text-gray-500 italic">
+                                No hay resultados disponibles
+                              </div>
+                            )}
+                          </div>
+                        </td>
+
 
                           {/* ESTADO */}
                           <td className="px-4 py-3 w-40">
@@ -644,7 +692,6 @@ export default function ConvocatoriasClient({
         </div>
       </main>
 
-      
       <DocumentosModal />
     </div>
   );
