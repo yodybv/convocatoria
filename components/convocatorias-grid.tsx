@@ -107,7 +107,7 @@ export default function ConvocatoriasGrid({
   }
 
   return (
-    <section className="py-16 px-4 bg-muted/30">
+    <section className="py-16 px-4 bg-muted/3">
       <div className="max-w-7xl mx-auto">
         <h3 className="text-2xl font-bold text-foreground mb-12">
           {title} <span className="text-muted-foreground">({list.length})</span>

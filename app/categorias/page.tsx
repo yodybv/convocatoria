@@ -26,7 +26,7 @@ export default function CategoriasPage() {
     <main className="min-h-screen bg-background flex flex-col">
       <HeroSection />
 
-      <section id="categorias" className="py-16 px-4 bg-muted/30">
+      <section id="categorias" className="py-16 px-4 bg-muted/3">
         <div className="max-w-7xl mx-auto">
           {/* <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
             Categorías de Convocatorias
