@@ -5,6 +5,6 @@ const DocumentosClient = dynamic(() => import("@/components/documentos/Documento
   loading: () => <div className="flex justify-center items-center min-h-64">Cargando...</div>
 });
 
-export default function PageGestion() {
-  return <DocumentosClient tipo="GESTION" titulo="DOCUMENTOS NORMATIVOS - GESTIÓN" />;
+export default function PageDesarrollo() {
+  return <DocumentosClient tipo="DESARROLLO" titulo="DOCUMENTOS NORMATIVOS - DESARROLLO" />;
 }
