@@ -39,7 +39,7 @@ import {
 // Datos de las oficinas según tu estructura
 const offices = [
   {
-    name: "Oficina Ejecutiva de Gestión y Desarrollo deRecursos Humanos",
+    name: "Oficina Ejecutiva de Gestión y Desarrollo de RRHH",
     description: "Dirección general y coordinación estratégica",
     icon: Building2,
     color: "from-blue-600 to-blue-800",
@@ -153,7 +153,7 @@ const opportunityCards = [
   },
   {
     name: "Prácticas",
-    href: "/convocatorias/practicas",
+    href: "/practicas",
     description: "Prácticas Prof y Pre Prof.",
     icon: GraduationCap,
     gradient: "from-purple-500 to-pink-500",
@@ -186,10 +186,10 @@ export default function RRHHHome() {
         <div className="relative max-w-7xl mx-auto px-4 py-12 md:py-16 text-primary-foreground">
           <div className="text-center max-w-4xl mx-auto">
             {/* Badge institucional */}
-            {/* <div className="inline-flex items-center gap-2 text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ring-1 ring-white/25 border border-white/10 mb-6">
+            <div className="inline-flex items-center gap-2 text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ring-1 ring-white/25 border border-white/10 mb-6">
               <Shield className="h-4 w-4" />
               Oficina Ejecutiva de:
-            </div> */}
+            </div>
 
             {/* Título principal */}
             <h1 className="mt-4 text-3xl md:text-5xl font-bold leading-tight tracking-tight">
@@ -234,42 +234,55 @@ export default function RRHHHome() {
         </div>
       </section>
       {/* SECCIÓN OPORTUNIDAD LABORAL - CARDS MEJORADAS */}
-
-      <section className="py-6 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-3xl mx-auto px-4">
-          <div className="text-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">
+      <section className="py-8 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Oportunidad Laboral
             </h2>
-            <p className="text-gray-600 text-sm">
-              Tipos de procesos disponibles
-            </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {opportunityCards.map((opportunity, index) => {
               const Icon = opportunity.icon;
               return (
                 <Link key={opportunity.href} href={opportunity.href}>
                   <div
                     className={`
-              group relative flex items-center gap-2 px-4 py-3 rounded-lg border
+              group relative overflow-hidden rounded-xl border-2 p-4
               ${opportunity.borderColor} ${opportunity.bgColor}
-              shadow-sm ${opportunity.shadow} hover:shadow-md
-              transition-all duration-200 hover:-translate-y-0.5
-              min-w-[140px] justify-center
+              shadow-md ${opportunity.shadow} hover:shadow-lg
+              transition-all duration-300 hover:-translate-y-1
             `}
                   >
-                    {/* Icono pequeño */}
-                    <Icon className={`h-4 w-4 ${opportunity.color}`} />
+                    {/* Efecto de borde superior con gradiente */}
+                    <div
+                      className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${opportunity.gradient}`}
+                    />
 
-                    {/* Solo el nombre */}
-                    <span className="font-semibold text-gray-900 text-sm group-hover:text-gray-800">
-                      {opportunity.name}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      {/* Icono más pequeño y en línea */}
+                      <div
+                        className={`flex-shrink-0 p-2 rounded-lg bg-gradient-to-r ${opportunity.gradient} shadow-sm`}
+                      >
+                        <Icon className="h-4 w-4 text-white" />
+                      </div>
 
-                    {/* Indicador de hover */}
-                    <ArrowRight className="h-3 w-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ml-1" />
+                      {/* Contenido compacto */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-800 transition-colors truncate">
+                          {opportunity.name}
+                        </h3>
+                        <p className="text-gray-600 text-xs leading-tight mt-1">
+                          {opportunity.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Indicador de hover sutil */}
+                    <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <ArrowRight className="h-3 w-3 text-gray-400" />
+                    </div>
                   </div>
                 </Link>
               );
@@ -278,19 +291,20 @@ export default function RRHHHome() {
 
           {/* Enlace compacto para ver todas las convocatorias */}
           <div className="text-center mt-6">
-            <Link href="/categorias">
+            <Link href="/convocatorias">
               <Button
                 variant="ghost"
                 size="sm"
-                className="bg-blue-600 text-white hover:ttext-white"
+                className="bg-blue-600 text-white hover:text-gray-800"
               >
-                +Convocatorias
+                Ver todas las convocatorias
                 <ArrowRight className="ml-1 h-3 w-3" />
               </Button>
             </Link>
           </div>
         </div>
       </section>
+
       {/* ESTRUCTURA ORGANIZACIONAL */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">

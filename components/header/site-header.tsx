@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
@@ -8,19 +8,19 @@ import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   const navItems = [
     { name: "Inicio", href: "/" },
     { name: "Quienes Somos", href: "/" },
     {
-      name: "Direciones",
+      name: "Direcciones",
       href: "#",
       dropdownBg: "bg-gradient-to-r from-blue-50 to-cyan-50",
       dropdown: [
         { name: "Recursos Humanos", href: "/" },
-        { name: "Gestion de Recursos Humanos", href: "/ " },
-        { name: "Gestion de Recursos Humanos", href: "/ " },
-  
+        { name: "Gestión de Recursos Humanos", href: "/" },
+        { name: "Desarrollo de Recursos Humanos", href: "/" },
       ],
     },
     {
@@ -28,19 +28,47 @@ export default function SiteHeader() {
       href: "#",
       dropdownBg: "bg-gradient-to-r from-green-50 to-emerald-50",
       dropdown: [
-        { name: "FUT", href: "https://publicaciones.diresahuanuco.gob.pe/index.php/s/mr1cxGVQIZoTzTa" },
+        {
+          name: "FUT",
+          href: "https://publicaciones.diresahuanuco.gob.pe/index.php/s/mr1cxGVQIZoTzTa",
+        },
         { name: "SERUMS", href: "/SERUMS" },
         { name: "Documentos Normativos", href: "/" },
         { name: "INFORHUS", href: "https://inforhus.minsa.gob.pe/login.php/" },
-         
       ],
     },
-    { name: "trabajano con nosotros", href: "/categorias" },
-    { name: "Contacto", href: "/contacto" },
+    { name: "Trabajando con nosotros", href: "/categorias" },
+    { name: "Contacto", href: "/rrhh/contacto" },
   ];
 
-  const handleDropdownToggle = (name: string) =>
+  // Cerrar dropdowns cuando se hace clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target as Element).closest(".dropdown-container")) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleMouseEnter = (name: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setActiveDropdown(name);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = window.setTimeout(() => {
+      setActiveDropdown(null);
+    }, 200); // Pequeño delay para evitar cierre accidental
+  };
+
+  const handleDropdownToggle = (name: string) => {
     setActiveDropdown(activeDropdown === name ? null : name);
+  };
 
   const closeAll = () => {
     setActiveDropdown(null);
@@ -59,7 +87,7 @@ export default function SiteHeader() {
             </div>
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4" />
-              <span>rrhh@diresahuanuco.gob.pe</span>
+              <span>recursoshumanos@diresahuanuco.gob.pe</span>
             </div>
           </div>
           <div className="text-xs mt-1 sm:mt-0 bg-primary/80 px-3 py-1 rounded-full">
@@ -73,7 +101,11 @@ export default function SiteHeader() {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-3">
-              <img src="/diresa-logo.png" alt="DIRESA Logo" className="h-14 w-auto" />
+              <img
+                src="/diresa-logo.png"
+                alt="DIRESA Logo"
+                className="h-14 w-auto"
+              />
               <span className="sr-only">DIRESA Huánuco</span>
             </Link>
           </div>
@@ -83,24 +115,31 @@ export default function SiteHeader() {
             {navItems.map((item) => {
               const hasDropdown = !!item.dropdown?.length;
               return (
-                <div key={item.name} className="relative">
+                <div
+                  key={item.name}
+                  className="relative dropdown-container"
+                  onMouseEnter={
+                    hasDropdown ? () => handleMouseEnter(item.name) : undefined
+                  }
+                  onMouseLeave={hasDropdown ? handleMouseLeave : undefined}
+                >
                   {hasDropdown ? (
                     <div className="relative">
                       <Button
                         className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg transition-all duration-200 hover:shadow-md flex items-center gap-1"
                         onClick={() => handleDropdownToggle(item.name)}
-                        onMouseEnter={() => setActiveDropdown(item.name)}
                       >
                         {item.name}
                         <ChevronDown
-                          className={`h-4 w-4 transition-transform ${activeDropdown === item.name ? "rotate-180" : ""}`}
+                          className={`h-4 w-4 transition-transform ${
+                            activeDropdown === item.name ? "rotate-180" : ""
+                          }`}
                         />
                       </Button>
 
                       {activeDropdown === item.name && (
                         <div
                           className={`absolute top-full left-0 mt-1 w-64 shadow-lg rounded-lg border border-gray-200 py-2 z-50 ${item.dropdownBg}`}
-                          onMouseLeave={() => setActiveDropdown(null)}
                         >
                           {item.dropdown!.map((d) => {
                             const isExt = d.href.startsWith("http");
@@ -117,6 +156,7 @@ export default function SiteHeader() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="block px-4 py-2 text-gray-800 hover:bg-white/80 hover:text-primary transition-all duration-200 rounded mx-2 hover:shadow-sm"
+                                onClick={closeAll}
                               >
                                 {content}
                               </a>
@@ -125,6 +165,7 @@ export default function SiteHeader() {
                                 key={d.name}
                                 href={d.href}
                                 className="block px-4 py-2 text-gray-800 hover:bg-white/80 hover:text-primary transition-all duration-200 rounded mx-2 hover:shadow-sm"
+                                onClick={closeAll}
                               >
                                 {content}
                               </Link>
@@ -150,10 +191,14 @@ export default function SiteHeader() {
           <Button
             variant="outline"
             size="sm"
-            className="lg:hidden bg-transparent"
+            className="lg:hidden bg-transparent border-gray-300"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {isMenuOpen ? (
+              <X className="h-4 w-4" />
+            ) : (
+              <Menu className="h-4 w-4" />
+            )}
           </Button>
         </div>
 
@@ -164,7 +209,7 @@ export default function SiteHeader() {
               {navItems.map((item) => {
                 const hasDropdown = !!item.dropdown?.length;
                 return (
-                  <div key={item.name}>
+                  <div key={item.name} className="dropdown-container">
                     {hasDropdown ? (
                       <div className="flex flex-col gap-1">
                         <Button
@@ -180,7 +225,9 @@ export default function SiteHeader() {
                         </Button>
 
                         {activeDropdown === item.name && (
-                          <div className={`ml-4 flex flex-col gap-1 mt-1 p-2 rounded-lg ${item.dropdownBg}`}>
+                          <div
+                            className={`ml-4 flex flex-col gap-1 mt-1 p-2 rounded-lg ${item.dropdownBg}`}
+                          >
                             {item.dropdown!.map((d) => {
                               const isExt = d.href.startsWith("http");
                               const content = (
