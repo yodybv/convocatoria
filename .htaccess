@@ -1,0 +1,10 @@
+ # ==========================
+# .htaccess para Next.js Static Export (FRONTEND) - MEJORADO
+# ==========================
+RewriteEngine On
+
+# 1. BLOQUEAR completamente las peticiones a archivos _rsc y .txt de Next.js
+RewriteCond %{REQUEST_URI} _rsc [NC,OR]
+RewriteCond %{REQUEST_URI} \.txt$ [NC,OR]
+RewriteCond %{REQUEST_URI} __next [NC]
+RewriteCond %{REQUEST_FILENAME} !-f

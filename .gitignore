@@ -10,7 +10,7 @@
 # production
 /build
 /out
-/otideploy
+/rrhhdeploy
 
 # debug
 npm-debug.log*
