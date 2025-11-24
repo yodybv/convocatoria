@@ -9,8 +9,6 @@
 
 # production
 /build
-/out
-/otideploy
 
 # debug
 npm-debug.log*
