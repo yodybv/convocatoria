@@ -1,4 +1,4 @@
- // components/convocatorias/ConvocatoriasClient.tsx
+// components/convocatorias/ConvocatoriasClient.tsx
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -585,65 +585,65 @@ export default function ConvocatoriasClient({
                             </div>
                           </td>
 
-                           {/* RESULTADOS */}
-                        <td className="px-4 py-3 w-64">
-                          <div className="flex flex-col gap-2">
-                            {/* encabezado igual que documentos */}
-                            <div className="flex items-center gap-2">
-                              <Award className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium">
-                                {convocatoria.resultados.total} resultado(s)
-                              </span>
-                            </div>
+                          {/* RESULTADOS */}
+                          <td className="px-4 py-3 w-64">
+                            <div className="flex flex-col gap-2">
+                              {/* encabezado igual que documentos */}
+                              <div className="flex items-center gap-2">
+                                <Award className="w-4 h-4 text-green-600" />
+                                <span className="text-sm font-medium">
+                                  {convocatoria.resultados.total} resultado(s)
+                                </span>
+                              </div>
 
-                            {/* SOLO mostramos si hay archivos de resultados */}
-                            {Array.isArray(convocatoria.resultados.detalle) &&
-                            convocatoria.resultados.detalle.length > 0 ? (
-                              <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                                {convocatoria.resultados.detalle.map((resultado) => (
-                                  <div
-                                    key={resultado.id}
-                                    className="flex items-center justify-between gap-2 p-2 bg-green-50 rounded border"
-                                  >
-                                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                                      <Badge
-                                        variant="outline"
-                                        className="text-xs whitespace-nowrap flex-shrink-0"
-                                      >
-                                        Resultado
-                                      </Badge>
-                                      <span
-                                        className="text-xs truncate flex-1 cursor-help"
-                                        title={resultado.titulo}
-                                      >
-                                        {resultado.titulo}
-                                      </span>
-                                    </div>
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      className="h-6 w-6 p-0 flex-shrink-0"
-                                      onClick={() =>
-                                        handleDownloadDocument(
-                                          resultado,
-                                          convocatoria.codigo,
-                                          "RESULTADO_"
-                                        )
-                                      }
-                                      title={`Descargar ${resultado.titulo}`}
+                              {/* SOLO mostramos si hay archivos de resultados */}
+                              {Array.isArray(convocatoria.resultados.detalle) &&
+                                convocatoria.resultados.detalle.length > 0 ? (
+                                <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                                  {convocatoria.resultados.detalle.map((resultado) => (
+                                    <div
+                                      key={resultado.id}
+                                      className="flex items-center justify-between gap-2 p-2 bg-green-50 rounded border"
                                     >
-                                      <Download className="w-3 h-3" />
-                                    </Button>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="text-xs text-gray-500 italic">
-                                No hay resultados disponibles
-                              </div>
-                            )}
-                          </div>
-                        </td>
+                                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                                        <Badge
+                                          variant="outline"
+                                          className="text-xs whitespace-nowrap flex-shrink-0"
+                                        >
+                                          Resultado
+                                        </Badge>
+                                        <span
+                                          className="text-xs truncate flex-1 cursor-help"
+                                          title={resultado.titulo}
+                                        >
+                                          {resultado.titulo}
+                                        </span>
+                                      </div>
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-6 w-6 p-0 flex-shrink-0"
+                                        onClick={() =>
+                                          handleDownloadDocument(
+                                            resultado,
+                                            convocatoria.codigo,
+                                            "RESULTADO_"
+                                          )
+                                        }
+                                        title={`Descargar ${resultado.titulo}`}
+                                      >
+                                        <Download className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <div className="text-xs text-gray-500 italic">
+                                  No hay resultados disponibles
+                                </div>
+                              )}
+                            </div>
+                          </td>
 
 
                           {/* ESTADO */}

@@ -1,3 +1,5 @@
-// app/rrhh/oportunidad-laboral/page.tsx
+"use client";
 import { redirect } from "next/navigation";
-export default function Page() { redirect("/convocatorias"); }
+export default function Page() {
+  redirect("/convocatorias");
+}

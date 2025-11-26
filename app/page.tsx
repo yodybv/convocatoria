@@ -186,10 +186,10 @@ export default function RRHHHome() {
         <div className="relative max-w-7xl mx-auto px-4 py-12 md:py-16 text-primary-foreground">
           <div className="text-center max-w-4xl mx-auto">
             {/* Badge institucional */}
-            {/* <div className="inline-flex items-center gap-2 text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ring-1 ring-white/25 border border-white/10 mb-6">
+            <div className="inline-flex items-center gap-2 text-sm bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ring-1 ring-white/25 border border-white/10 mb-6">
               <Shield className="h-4 w-4" />
               Oficina Ejecutiva de:
-            </div> */}
+            </div>
 
             {/* Título principal */}
             <h1 className="mt-4 text-3xl md:text-5xl font-bold leading-tight tracking-tight">

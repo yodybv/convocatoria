@@ -28,9 +28,9 @@ export default function CategoriasPage() {
 
       <section id="categorias" className="py-16 px-4 bg-muted/3">
         <div className="max-w-7xl mx-auto">
-          {/* <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
+          <h2 className="text-3xl font-bold text-center mb-12 text-foreground">
             Categorías de Convocatorias
-          </h2> */}
+          </h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {categorias.map((cat) => {

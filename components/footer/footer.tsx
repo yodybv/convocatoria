@@ -38,7 +38,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/convocatorias"
                   className="opacity-90 hover:opacity-100 transition-opacity"
                 >
                   Resultados
@@ -52,7 +52,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <a
-                  href="/normativas"
+                  href="/rrhh/documentos-normativos"
                   className="opacity-90 hover:opacity-100 transition-opacity"
                 >
                   Normativas
@@ -61,7 +61,7 @@ export default function Footer() {
               <li>
                 <a
                   href="http://www.transparencia.gob.pe/enlaces/pte_transparencia_enlaces.aspx?id_entidad=13648&id_tema=1&ver=D#.Xa3ituhKhQD"
-                  className="opacity-90 hover:opacity-100 transition-opacity"
+                  className="opacity-90 hover:opacity-100 transition-opacity" target="_blank"
                 >
                   Transparencia
                 </a>
@@ -96,7 +96,7 @@ export default function Footer() {
                 <Globe className="w-4 h-4" />
                 <a
                   href="https://diresahuanuco.gob.pe/"
-                  target="_black"
+                  target="_blank"
                   className="opacity-90 hover:opacity-100 transition-opacity"
                 >
                   diresahuanuco.gob.pe
